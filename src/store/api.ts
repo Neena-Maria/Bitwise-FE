@@ -15,12 +15,12 @@ type GetUserRepositoriesResponse = {
 
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://pokeapi.co/api/v2/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://192.168.4.221:3000' }),
   endpoints: (builder) => ({
-    getPokemonByName: builder.query<any, string>({
-        query: (name) => `pokemon/${name}`,
+    login: builder.query({
+        query: () => "/api/google/initiate-auth",
       }),
   }),
 });
 
-export const { useGetPokemonByNameQuery } = api;
+export const { useLazyLoginQuery } = api;
