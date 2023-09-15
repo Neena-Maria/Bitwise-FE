@@ -33,7 +33,7 @@ const SideNavBar = () => {
         ref={sidebarRef}
         aria-label="Sidebar"
         id="side-nav-bar"
-        className="absolute z-[100] flex h-screen justify-center overflow-y-scroll bg-white py-5 border-r border-zinc-400 overflow-x-hidden "
+        className="z-[100] flex h-screen justify-center overflow-y-scroll bg-white py-5 border-r border-zinc-400 overflow-x-hidden "
       >
         <div className="w-72">
           <div className="px-2.5">
