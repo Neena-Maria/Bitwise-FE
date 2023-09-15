@@ -38,20 +38,23 @@ const MyDocs = () => {
     const res = await createMyDoc(request);
     if (res.ok) {
       fetchMyDocs();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
     setShowAddModal(false);
     setDocName("");
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
+    <div className="flex h-screen w-screen">
       <SideBar />
-      <div className="h-full w-full px-8">
+      <div className="h-full w-[45%] px-8">
         <div className="flex mt-10">
           <p className="font-semibold text-lg">My Notes</p>
           <Button
             variant="primary"
-            label="+ Add My Docs"
+            label="+ Add Notes"
             onClick={() => {
               setShowAddModal(true);
             }}
@@ -75,12 +78,12 @@ const MyDocs = () => {
             }}
           >
             <div className="max-w-[600px]">
-              <p className="w-[500px] px-6 py-4">Add My Doc </p>
+              <p className="w-[500px] px-6 py-4">Add Notes </p>
               <hr />
               <div className="px-6 mt-4 mb-6">
                 <p className="mb-2">Name</p>
                 <input
-                  placeholder="Workspace Name"
+                  placeholder="Note Name"
                   className="outline-none border-2 px-2 h-10 w-full border-[#BBC0C5] rounded-lg"
                   onChange={(e) => setDocName(e.target.value)}
                   value={docName}
