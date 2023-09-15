@@ -6,6 +6,7 @@ import Button from "../../components/Button";
 import Modal from "../../components/Modal";
 import { createMyDoc } from "../../api";
 import SideBar from "../../components/sidebar/Sidebar";
+import MindMap from "../../components/MindMap";
 
 const MyDocs = () => {
   const navigate = useNavigate();
@@ -15,7 +16,6 @@ const MyDocs = () => {
   );
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [docName, setDocName] = useState<string>("");
-
 
   async function fetchMyDocs() {
     const response = await getMyDocs(id as string);
@@ -106,6 +106,7 @@ const MyDocs = () => {
           </Modal>
         )}
       </div>
+      <MindMap />
     </div>
   );
 };
