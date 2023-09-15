@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { ReactComponent as Cross } from "../../icons/cross.svg";
+import { ReactComponent as Cross } from "../icons/cross.svg";
 
 interface ModalProps {
   onCancel: () => void;

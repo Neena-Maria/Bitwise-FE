@@ -1,4 +1,4 @@
-import { ReactComponent as Cross } from "../../icons/cross.svg";
+import { ReactComponent as Cross } from "../icons/cross.svg";
 
 interface ChipProps {
   label: string;
