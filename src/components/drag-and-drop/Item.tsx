@@ -4,7 +4,8 @@ import Modal from "../Modal";
 
 export const Item = (props: { item: any }) => {
   const { item } = props;
-  const status: "todo" | "inprogress" | "inreview" | "done" = item.status;
+  const status: "OPEN" | "IN_PROGRESS" | "UNDER_REVIEW" | "COMPLETED" =
+    item.status;
   const [open, isOpen] = useState(false);
 
   return (

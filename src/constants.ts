@@ -1,13 +1,20 @@
 export const statusColors = {
-    todo:'#9ca3af',
-    inprogress:'#38bdf8',
-    inreview:'#dc2626',
-    done:'#16a34a'
-}
+  OPEN: "#9ca3af",
+  IN_PROGRESS: "#38bdf8",
+  UNDER_REVIEW: "#dc2626",
+  COMPLETED: "#16a34a",
+};
 
 export const StatusTitles = {
-    todo:'To Do',
-    inprogress:'In Progress',
-    inreview:'In Review',
-    done:'Done'
+  OPEN: "To Do",
+  IN_PROGRESS: "In Progress",
+  UNDER_REVIEW: "In Review",
+  COMPLETED: "Done",
+};
+
+export enum TicketStatus {
+  OPEN = "OPEN",
+  IN_PROGRESS = "IN_PROGRESS",
+  UNDER_REVIEW = "UNDER_REVIEW",
+  COMPLETED = "COMPLETED",
 }
