@@ -16,7 +16,6 @@ const Login = () => {
 
   const onClickSignin = async () => {
     const signInUrl: any = await login({}).unwrap();
-    console.log(signInUrl);
     if (signInUrl?.data) {
       setLocalStorageItem("isLoggedIn", "true");
       window.location.replace(signInUrl.data);

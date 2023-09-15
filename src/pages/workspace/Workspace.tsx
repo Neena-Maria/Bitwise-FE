@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import update from "immutability-helper";
@@ -11,12 +11,11 @@ import { ReactComponent as EditIcon } from "../../icons/edit.svg";
 import Modal from "../../components/Modal";
 import Chip from "../../components/Chip";
 import Button from "../../components/Button";
-import { useGetWorkSpacesQuery } from "../../store/api";
+
+import { addWorkspace, getWorkspaces } from "../../api";
 
 const WorkSpace = () => {
   const navigate = useNavigate();
-
-  const { data } = useGetWorkSpacesQuery({});
 
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
@@ -25,85 +24,20 @@ const WorkSpace = () => {
   const [emailId, setEmailId] = useState<string>("");
   const [emailList, setEmailList] = useState<string[]>([]);
   const [description, setDescription] = useState<string>("");
-  // TODO take data from api
-  const list = [
-    {
-      id: "1",
-      name: "workspace 1",
-      admin: "adasd",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-    {
-      id: "2",
-      name: "workspace 2",
-      admin: "adasd",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-    {
-      id: "3",
-      name: "workspace 3",
-      admin: "adasd",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-    {
-      id: "4",
-      name: "workspace 4",
-      admin: "adasd",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-    {
-      id: "5",
-      name: "workspace 5",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-    {
-      id: "6",
-      name: "workspace 6",
-      admin: "adasd",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-    {
-      id: "7",
-      name: "workspace 7",
-      admin: "adasd",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-    {
-      id: "8",
-      name: "workspace 8",
-      admin: "adasd",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-    {
-      id: "9",
-      name: "workspace 9",
-      admin: "adasd",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-    {
-      id: "10",
-      name: "workspace 10",
-      admin: "adasd",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-    {
-      id: "11",
-      name: "workspace 11",
-      admin: "adasd",
-      accessCount: 5,
-      description: "sdfadfafadfafddsfa",
-    },
-  ];
+
+  const [workspaces, setWorkspaces] = useState<any>([]);
+
+  async function fetchWorkspaces() {
+    const response = await getWorkspaces();
+    const responseData = await response.json();
+    if (responseData.data[0]) {
+      setWorkspaces(responseData.data[0]);
+    }
+  }
+
+  useEffect(() => {
+    fetchWorkspaces();
+  }, []);
 
   const findIndex = (item: string) =>
     emailList.findIndex((email) => email === item);
@@ -132,6 +66,24 @@ const WorkSpace = () => {
     }
   };
 
+  const handleSaveWorkspace = async () => {
+    const request = {
+      name: workspaceName,
+      description: description,
+      userEmails: [...emailList],
+    };
+    const res = await addWorkspace(request);
+    if (res.ok) {
+      fetchWorkspaces();
+    }
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setEmailId("");
+    setWorkspaceName("");
+    setEmailList([]);
+    setDescription("");
+  };
+
   return (
     <div className="h-screen w-screen overflow-x-auto">
       <p className="mb-16 mt-10 flex items-center justify-center text-3xl font-extrabold">
@@ -144,13 +96,13 @@ const WorkSpace = () => {
         className="ml-auto mr-10 mb-5"
       />
       <div className="flex flex-col items-center mb-4 mr-10">
-        {list.map((item) => (
+        {workspaces.map((item: any) => (
           <div
             className="relative w-[1500px] p-3 py-6 mt-3 rounded-lg border border-[#E8EAEB] bg-[#f2f4fc]"
             role="presentation"
             onClick={() => {
               // TODO navigate to /workspace/id
-              navigate("/login");
+              navigate(`/workspace/${item.id}`);
             }}
           >
             <div className="grid grid-cols-5">
@@ -160,11 +112,13 @@ const WorkSpace = () => {
               </div>
               <div className="flex items-center">
                 <UsersIcon className="h-5 w-5 mr-4" />
-                <p className="text-lg">{item.accessCount}</p>
+                <p className="text-lg">{item.accessCount ?? "5"}</p>
               </div>
               <div className="flex flex-row">
                 <AdminIcon className="h-5 w-5 mr-4" />
-                <p className="text-lg">{item.admin}</p>
+                <p className="text-lg max-w-[150px] truncate">
+                  {item.adminUserId}
+                </p>
               </div>
               <p className="text-lg">{item.description}</p>
               <div
@@ -235,15 +189,7 @@ const WorkSpace = () => {
                   label="Submit"
                   className="mr-5"
                   variant="primary"
-                  onClick={() => {
-                    /* TODO: call api */
-                    setShowAddModal(false);
-                    setShowEditModal(false);
-                    setEmailId("");
-                    setWorkspaceName("");
-                    setEmailList([]);
-                    setDescription("");
-                  }}
+                  onClick={handleSaveWorkspace}
                 />
                 <Button
                   label="Cancel"
