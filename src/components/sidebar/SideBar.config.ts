@@ -5,14 +5,14 @@ export type SideNavItem = {
 };
 export const sideNavItems: SideNavItem[] = [
   {
-    id: "editor",
+    id: "myDocs",
     name: "Text Editor",
-    path: "/editor",
+    path: "/documents",
   },
   {
     id: "docs",
     name: "Docs",
-    path: "/docs",
+    path: "/google-docs",
   },
   {
     id: "board",

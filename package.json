@@ -60,6 +60,7 @@
   "devDependencies": {
     "@types/draft-convert": "^2.1.4",
     "@types/draft-js": "^0.11.12",
+    "@types/html-to-draftjs": "^1.4.0",
     "@types/react-draft-wysiwyg": "^1.13.4"
   }
 }
