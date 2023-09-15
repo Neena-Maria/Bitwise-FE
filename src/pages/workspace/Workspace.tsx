@@ -137,7 +137,7 @@ const WorkSpace = () => {
                 <div className="flex flex-row">
                   <AdminIcon className="h-5 w-5 mr-4" />
                   <p className="text-lg max-w-[250px] truncate">
-                    {item.workspace.adminUserId}
+                    {item.workspace.admin.name}
                   </p>
                 </div>
                 <p className="text-lg">{item.workspace.description}</p>
@@ -150,6 +150,10 @@ const WorkSpace = () => {
                       setSelectedItem(item.workspace);
                       setWorkspaceName(item.workspace.name);
                       setDescription(item.workspace.description);
+                      const emails = item.workspace.workspaceUsers.map(
+                        (userDetails: any) => userDetails.user.email
+                      );
+                      setEmailList(emails);
                       setShowAddModal(true);
                       // setEmailList(item.)
                     }}
