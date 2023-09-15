@@ -75,3 +75,17 @@ export const createMyDoc = async (payload:any) => {
   });
   return response;
 }
+
+export const getMindMapData = async (id:string) => {
+  const response = await fetch(`http://localhost:3000/api/workspace/${id}/all`,{
+    credentials: "include",
+  });
+  return response;
+}
+
+export const getTicketById = async(id:string) =>{
+  const response = await fetch(`http://localhost:3000/api/ticket/id/${id}`, {
+    credentials: "include",
+  });
+  return response;
+};

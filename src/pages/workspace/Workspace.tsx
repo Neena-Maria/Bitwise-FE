@@ -13,6 +13,7 @@ import Chip from "../../components/Chip";
 import Button from "../../components/Button";
 
 import { addWorkspace, editWorkspace, getUser, getWorkspaces } from "../../api";
+import MindMap from "../../components/MindMap";
 
 const WorkSpace = () => {
   const navigate = useNavigate();
