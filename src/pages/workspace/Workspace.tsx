@@ -6,6 +6,8 @@ import update from "immutability-helper";
 import { ReactComponent as WorkSpaceIcon } from "../../icons/workspace.svg";
 import { ReactComponent as UsersIcon } from "../../icons/users.svg";
 import { ReactComponent as AdminIcon } from "../../icons/admin.svg";
+import { ReactComponent as EditIcon } from "../../icons/edit.svg";
+
 import Modal from "../../components/Modal";
 import Chip from "../../components/Chip";
 import Button from "../../components/Button";
@@ -14,6 +16,8 @@ const WorkSpace = () => {
   const navigate = useNavigate();
 
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+
   const [workspaceName, setWorkspaceName] = useState<string>("");
   const [emailId, setEmailId] = useState<string>("");
   const [emailList, setEmailList] = useState<string[]>([]);
@@ -146,7 +150,7 @@ const WorkSpace = () => {
               navigate("/login");
             }}
           >
-            <div className="grid grid-cols-4">
+            <div className="grid grid-cols-5">
               <div className="flex items-center">
                 <WorkSpaceIcon className="h-5 w-5 ml-3" />
                 <p className="ml-4 text-lg">{item.name}</p>
@@ -160,12 +164,31 @@ const WorkSpace = () => {
                 <p className="text-lg">{item.admin}</p>
               </div>
               <p className="text-lg">{item.description}</p>
+              <div
+                role="presentation"
+                className="hover:bg-sky-200 w-fit p-2 rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <EditIcon />
+              </div>
             </div>
           </div>
         ))}
       </div>
-      {showAddModal && (
-        <Modal isOpen={showAddModal} onCancel={() => setShowAddModal(false)}>
+      {(showAddModal || showEditModal) && (
+        <Modal
+          isOpen={showAddModal}
+          onCancel={() => {
+            setShowAddModal(false);
+            setShowEditModal(false);
+            setEmailId("");
+            setWorkspaceName("");
+            setEmailList([]);
+            setDescription("");
+          }}
+        >
           <div className="max-w-[600px]">
             <p className="w-[500px] px-6 py-4">Add New Workspace </p>
             <hr />
@@ -212,6 +235,11 @@ const WorkSpace = () => {
                   onClick={() => {
                     /* TODO: call api */
                     setShowAddModal(false);
+                    setShowEditModal(false);
+                    setEmailId("");
+                    setWorkspaceName("");
+                    setEmailList([]);
+                    setDescription("");
                   }}
                 />
                 <Button
@@ -219,6 +247,11 @@ const WorkSpace = () => {
                   variant="secondary"
                   onClick={() => {
                     setShowAddModal(false);
+                    setShowEditModal(false);
+                    setEmailId("");
+                    setWorkspaceName("");
+                    setEmailList([]);
+                    setDescription("");
                   }}
                 />
               </div>
