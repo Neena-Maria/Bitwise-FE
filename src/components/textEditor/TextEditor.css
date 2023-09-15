@@ -1,0 +1,25 @@
+.wrapper-class {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    width: 800px;
+    height: 700px;
+  }
+  .editor-class {
+    background-color: lightgray;
+    padding: 1rem;
+    border: 1px solid #ccc;
+  }
+  .toolbar-class {
+    border: 1px solid #ccc;
+  }
+  
+  /* give color to dropdown options */
+  
+  /* .rdw-suggestion-dropdown {
+    border: 1px solid red;
+    background-color: #2f6fed;
+  }
+  .rdw-suggestion-option {
+    background-color: green;
+  } */
+  
