@@ -17,10 +17,15 @@ export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://192.168.4.221:3000' }),
   endpoints: (builder) => ({
-    login: builder.query({
-        query: () => "/api/google/initiate-auth",
+    login: builder.mutation({
+        query: () => {
+          return {
+            url: "/api/google/initiate-auth",
+            method: "POST",
+          }
+        },
       }),
   }),
 });
 
-export const { useLazyLoginQuery } = api;
+export const { useLoginMutation } = api;
