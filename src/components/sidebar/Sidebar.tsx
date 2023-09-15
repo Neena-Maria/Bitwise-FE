@@ -1,14 +1,24 @@
 import { MutableRefObject, useRef, useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../icons/logo.png";
 import { SideNavItem, sideNavItems } from "./SideBar.config";
 import NavSection from "./NavSection";
 
 const SideNavBar = () => {
   const navigate = useNavigate();
+
+  const { pathname: currentPath } = useLocation();
+
+  const checkIfPathMatchesCurrentPath = () => {
+    if (currentPath.includes("/documents")) return sideNavItems[0];
+    else if (currentPath.includes("/google-docs")) return sideNavItems[1];
+    else if (currentPath.includes("/board")) return sideNavItems[2];
+    else return sideNavItems[0];
+  };
+
   const [selectedMenu, setSelectedMenu] = useState<SideNavItem>(
-    sideNavItems[0]
+    checkIfPathMatchesCurrentPath
   );
 
   const sidebarRef = useRef() as MutableRefObject<HTMLDivElement>;
