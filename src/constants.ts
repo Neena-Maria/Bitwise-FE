@@ -4,3 +4,10 @@ export const statusColors = {
     inreview:'#dc2626',
     done:'#16a34a'
 }
+
+export const StatusTitles = {
+    todo:'To Do',
+    inprogress:'In Progress',
+    inreview:'In Review',
+    done:'Done'
+}

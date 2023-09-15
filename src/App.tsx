@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import { store } from "./store/store";
 import Login from "./pages/login/Login";
 import Board from "./pages/board/Board";
-import WorkSpace from './pages/workspace/Workspace';
+import WorkSpace from "./pages/workspace/Workspace";
 
 function App() {
   return (
