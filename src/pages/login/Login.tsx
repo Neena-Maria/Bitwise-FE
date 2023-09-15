@@ -1,10 +1,10 @@
 import { ReactComponent as GoogleIcon } from "../../icons/Google.svg";
 import { ReactComponent as GoogleLogo } from "../../icons/Google-Logo.svg";
+import { useLazyLoginQuery } from "../../store/api";
 
 const Login = () => {
-  //   const { data: signInUrl } = useGetSocialSignInUrlQuery(
-  //     `${window.location.origin}/projects`
-  //   );
+  const [login, { data }] = useLazyLoginQuery();
+
   const signInUrl = `${window.location.origin}/workspace`;
   console.log("url", signInUrl);
   const setLocalStorageItem = (key: string, value: unknown) => {
@@ -14,10 +14,11 @@ const Login = () => {
     );
   };
 
-  const onClickSignin = () => {
-    if (signInUrl) {
+  const onClickSignin = async () => {
+    const signInUrl = await login({});
+    if (signInUrl?.data) {
       setLocalStorageItem("isLoggedIn", "true");
-      window.location.replace(signInUrl);
+      window.location.replace(signInUrl.data);
     }
   };
 
