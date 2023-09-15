@@ -15,7 +15,7 @@ type GetUserRepositoriesResponse = {
 
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://192.168.4.221:3000' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
   endpoints: (builder) => ({
     login: builder.mutation({
         query: () => {
@@ -33,7 +33,16 @@ export const api = createApi({
           }
         },
       }),
+      addWorkSpace: builder.mutation({
+        query: (requestBody) => {
+          return {
+            url: "/api/workspace",
+            method: "POST",
+            body:requestBody
+          }
+        },
+      }),
   }),
 });
 
-export const { useLoginMutation, useGetWorkSpacesQuery } = api;
+export const { useLoginMutation, useGetWorkSpacesQuery, useLazyGetWorkSpacesQuery, useAddWorkSpaceMutation } = api;

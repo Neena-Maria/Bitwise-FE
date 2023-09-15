@@ -13,6 +13,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/board" element={<Board />} />
           <Route path="/workspace" element={<WorkSpace />} />
+          <Route path={"/workspace/[id]"} element={<WorkSpace />} />
         </Routes>
       </Router>
     </Provider>
