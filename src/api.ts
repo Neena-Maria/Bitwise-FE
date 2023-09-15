@@ -58,3 +58,20 @@ export const changeTaskStatus = async (payload:any,id:string) =>{
   });
   return response;
 }
+
+export const getMyDocs = async (id:string) => {
+  const response = await fetch(`http://localhost:3000/api/document/workspace/${id}`, {
+    credentials: "include",
+  });
+  return response;
+};
+
+export const createMyDoc = async (payload:any) => {
+  const response = await fetch(`http://localhost:3000/api/document/create`, {
+    credentials: "include",
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: {'content-type': 'application/json'}
+  });
+  return response;
+}

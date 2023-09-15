@@ -1,14 +1,24 @@
 import { MutableRefObject, useRef, useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../icons/logo.png";
 import { SideNavItem, sideNavItems } from "./SideBar.config";
 import NavSection from "./NavSection";
 
 const SideNavBar = () => {
   const navigate = useNavigate();
+
+  const { pathname: currentPath } = useLocation();
+
+  const checkIfPathMatchesCurrentPath = () => {
+    if (currentPath.includes("/documents")) return sideNavItems[0];
+    else if (currentPath.includes("/google-docs")) return sideNavItems[1];
+    else if (currentPath.includes("/board")) return sideNavItems[2];
+    else return sideNavItems[0];
+  };
+
   const [selectedMenu, setSelectedMenu] = useState<SideNavItem>(
-    sideNavItems[0]
+    checkIfPathMatchesCurrentPath
   );
 
   const sidebarRef = useRef() as MutableRefObject<HTMLDivElement>;
@@ -23,7 +33,7 @@ const SideNavBar = () => {
         ref={sidebarRef}
         aria-label="Sidebar"
         id="side-nav-bar"
-        className="absolute z-[100] flex h-screen justify-center overflow-y-scroll bg-white py-5 border-r border-zinc-400 overflow-x-hidden "
+        className="z-[100] flex h-screen justify-center overflow-y-scroll bg-white py-5 border-r border-zinc-400 overflow-x-hidden "
       >
         <div className="w-72">
           <div className="px-2.5">
