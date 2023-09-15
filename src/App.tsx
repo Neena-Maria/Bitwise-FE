@@ -15,9 +15,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/board" element={<Board />} />
           <Route path="/workspace" element={<WorkSpace />} />
-          <Route path={"/workspace/:id"} element={<WorkSpace />} />
           <Route path="/workspace/:id/google-docs" element={<GoogleDocs />} />
           <Route path="/workspace/:id/documents" element={<MyDocs />} />
           <Route
@@ -28,6 +26,7 @@ function App() {
             path="/workspace/:id/documents/:myDocId"
             element={<MyDocEditor />}
           />
+          <Route path="/workspace/:workspaceId/board" element={<Board />} />
         </Routes>
       </Router>
     </Provider>

@@ -13,57 +13,12 @@ import type { DropAnimation } from "@dnd-kit/core";
 import { useState } from "react";
 import Container from "./Container";
 import { Item } from "./Item";
+import { TicketStatus } from "../../constants";
+import { changeTaskStatus } from "../../api";
 
-const DragAndDrop = () => {
-  const [items, setItems] = useState<any>({
-    todo: [
-      {
-        id: "1",
-        title: "Websocket integration",
-        description: "Websocket integration",
-        status: "todo",
-      },
-      {
-        id: "2",
-        title: "Api integration",
-        description: "Api integration",
-        status: "todo",
-      },
-    ],
-    inprogress: [
-      {
-        id: "3",
-        title: "Document Editor",
-        description: "Document Editor",
-        status: "inprogress",
-      },
-      {
-        id: "4",
-        title: "Mindmap ui",
-        description: "Mindmap ui",
-        status: "inprogress",
-      },
-    ],
-    inreview: [
-      {
-        id: "5",
-        title: "Bitwise board ui",
-        description: "Bitwise board ui",
-        status: "inreview",
-      },
-    ],
-    done: [
-      {
-        id: "6",
-        title: "Login page",
-        description: "Login page",
-        status: "done",
-      },
-      { id: "7", title: "List page", description: "List page", status: "done" },
-    ],
-  });
+const DragAndDrop = ({ tasks }: any) => {
   const [activeId, setActiveId] = useState<any>();
-
+  const [items, setItems] = useState<any>(tasks);
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -112,7 +67,8 @@ const DragAndDrop = () => {
     if (changedStatus) {
       Object.values(items).forEach((itemList: any) => {
         for (let item of itemList) {
-          if (item.id === active.id) {
+          if (item.id === active.id && item.status !== changedStatus) {
+            changeTaskStatus({ status: changedStatus }, active.id);
             item.status = changedStatus;
           }
         }
@@ -221,10 +177,26 @@ const DragAndDrop = () => {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
-      <Container id="todo" items={items.todo} title="To Do" />
-      <Container id="inprogress" items={items.inprogress} title="In Progress" />
-      <Container id="inreview" items={items.inreview} title="In Review" />
-      <Container id="done" items={items.done} title="Done" />
+      <Container
+        id={TicketStatus.OPEN}
+        items={items[TicketStatus.OPEN]}
+        title="To Do"
+      />
+      <Container
+        id={TicketStatus.IN_PROGRESS}
+        items={items[TicketStatus.IN_PROGRESS]}
+        title="In Progress"
+      />
+      <Container
+        id={TicketStatus.UNDER_REVIEW}
+        items={items[TicketStatus.UNDER_REVIEW]}
+        title="In Review"
+      />
+      <Container
+        id={TicketStatus.COMPLETED}
+        items={items[TicketStatus.COMPLETED]}
+        title="Done"
+      />
       <DragOverlay dropAnimation={dropAnimationConfig}>
         {activeId ? <Item item={findItem(activeId)} /> : null}
       </DragOverlay>
