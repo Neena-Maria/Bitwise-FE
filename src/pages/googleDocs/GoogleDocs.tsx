@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import ListCard from "../../components/ListCard";
+import SideBar from "../../components/sidebar/Sidebar";
 
 const GoogleDocs = () => {
   const navigate = useNavigate();
@@ -18,16 +19,19 @@ const GoogleDocs = () => {
   ];
 
   return (
-    <div className="h-full w-full">
-      <p className="font-medium text-lg">External Docs</p>
-      {workspaceData.map((item) => (
-        <ListCard
-          name={item.name}
-          handleClick={() =>
-            navigate(`/workspace/${workspaceId}/google-docs/${item.id}`)
-          }
-        />
-      ))}
+    <div className="flex h-screen w-screen overflow-hidden">
+      <SideBar />
+      <div className="h-full w-full px-8">
+        <p className="font-bold text-xl mt-6">External Docs</p>
+        {workspaceData.map((item) => (
+          <ListCard
+            name={item.name}
+            handleClick={() =>
+              navigate(`/workspace/${workspaceId}/google-docs/${item.id}`)
+            }
+          />
+        ))}
+      </div>
     </div>
   );
 };

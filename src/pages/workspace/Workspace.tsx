@@ -102,7 +102,7 @@ const WorkSpace = () => {
             role="presentation"
             onClick={() => {
               // TODO navigate to /workspace/id
-              navigate(`/workspace/${item.id}`);
+              navigate(`/workspace/${item.id}/documents`);
             }}
           >
             <div className="grid grid-cols-5">
