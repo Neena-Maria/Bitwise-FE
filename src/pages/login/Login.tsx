@@ -1,9 +1,9 @@
 import { ReactComponent as GoogleIcon } from "../../icons/Google.svg";
-import { useLazyLoginQuery } from "../../store/api";
+import { useLoginMutation } from "../../store/api";
 import logo from "../../icons/logo-with-name.png";
 
 const Login = () => {
-  const [login, { data }] = useLazyLoginQuery();
+  const [login, { data }] = useLoginMutation();
 
   const signInUrl = `${window.location.origin}/workspace`;
   console.log("url", signInUrl);
@@ -15,7 +15,8 @@ const Login = () => {
   };
 
   const onClickSignin = async () => {
-    const signInUrl = await login({});
+    const signInUrl: any = await login({}).unwrap();
+    console.log(signInUrl);
     if (signInUrl?.data) {
       setLocalStorageItem("isLoggedIn", "true");
       window.location.replace(signInUrl.data);

@@ -11,9 +11,12 @@ import { ReactComponent as EditIcon } from "../../icons/edit.svg";
 import Modal from "../../components/Modal";
 import Chip from "../../components/Chip";
 import Button from "../../components/Button";
+import { useGetWorkSpacesQuery } from "../../store/api";
 
 const WorkSpace = () => {
   const navigate = useNavigate();
+
+  const { data } = useGetWorkSpacesQuery({});
 
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
