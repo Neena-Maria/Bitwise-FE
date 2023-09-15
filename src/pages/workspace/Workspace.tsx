@@ -12,13 +12,12 @@ import Modal from "../../components/Modal";
 import Chip from "../../components/Chip";
 import Button from "../../components/Button";
 
-import { addWorkspace, getWorkspaces } from "../../api";
+import { addWorkspace, editWorkspace, getUser, getWorkspaces } from "../../api";
 
 const WorkSpace = () => {
   const navigate = useNavigate();
 
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [showEditModal, setShowEditModal] = useState<boolean>(false);
 
   const [workspaceName, setWorkspaceName] = useState<string>("");
   const [emailId, setEmailId] = useState<string>("");
@@ -26,6 +25,9 @@ const WorkSpace = () => {
   const [description, setDescription] = useState<string>("");
 
   const [workspaces, setWorkspaces] = useState<any>([]);
+  const [user, setUser] = useState<any>();
+
+  const [selectedItem, setSelectedItem] = useState<any>();
 
   async function fetchWorkspaces() {
     const response = await getWorkspaces();
@@ -35,9 +37,24 @@ const WorkSpace = () => {
     }
   }
 
+  const fetchUser = async () => {
+    const response = await getUser();
+    const responseData = await response.json();
+    if (responseData.data) {
+      setUser(responseData.data);
+    }
+  };
+
   useEffect(() => {
     fetchWorkspaces();
+    fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      console.log(user);
+    }
+  }, [user]);
 
   const findIndex = (item: string) =>
     emailList.findIndex((email) => email === item);
@@ -72,12 +89,14 @@ const WorkSpace = () => {
       description: description,
       userEmails: [...emailList],
     };
-    const res = await addWorkspace(request);
+    let res;
+    if (selectedItem) {
+      res = await editWorkspace(request, selectedItem.id);
+    } else res = await addWorkspace(request);
     if (res.ok) {
       fetchWorkspaces();
     }
     setShowAddModal(false);
-    setShowEditModal(false);
     setEmailId("");
     setWorkspaceName("");
     setEmailList([]);
@@ -116,30 +135,36 @@ const WorkSpace = () => {
               </div>
               <div className="flex flex-row">
                 <AdminIcon className="h-5 w-5 mr-4" />
-                <p className="text-lg max-w-[150px] truncate">
-                  {item.adminUserId}
+                <p className="text-lg max-w-[250px] truncate">
+                  {item.admin.name}
                 </p>
               </div>
               <p className="text-lg">{item.description}</p>
-              <div
-                role="presentation"
-                className="hover:bg-sky-200 w-fit p-2 rounded-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <EditIcon />
-              </div>
+              {item.adminUserId === user?.id && (
+                <div
+                  role="presentation"
+                  className="hover:bg-sky-200 w-fit p-2 rounded-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedItem(item);
+                    setWorkspaceName(item.name);
+                    setDescription(item.description);
+                    setShowAddModal(true);
+                    // setEmailList(item.)
+                  }}
+                >
+                  <EditIcon />
+                </div>
+              )}
             </div>
           </div>
         ))}
       </div>
-      {(showAddModal || showEditModal) && (
+      {showAddModal && (
         <Modal
           isOpen={showAddModal}
           onCancel={() => {
             setShowAddModal(false);
-            setShowEditModal(false);
             setEmailId("");
             setWorkspaceName("");
             setEmailList([]);
@@ -156,6 +181,7 @@ const WorkSpace = () => {
                 className="outline-none border-2 px-2 h-10 w-full border-[#BBC0C5] rounded-lg"
                 onChange={(e) => setWorkspaceName(e.target.value)}
                 value={workspaceName}
+                disabled={selectedItem}
               />
               <p className="mb-2 mt-4">Description</p>
               <textarea
@@ -165,6 +191,7 @@ const WorkSpace = () => {
                 value={description}
                 rows={4}
                 cols={50}
+                disabled={selectedItem}
               />
               <p className="mt-2 mb-2">Email</p>
               <input
@@ -196,7 +223,6 @@ const WorkSpace = () => {
                   variant="secondary"
                   onClick={() => {
                     setShowAddModal(false);
-                    setShowEditModal(false);
                     setEmailId("");
                     setWorkspaceName("");
                     setEmailList([]);

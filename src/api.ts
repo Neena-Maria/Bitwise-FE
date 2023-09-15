@@ -15,6 +15,16 @@ export const addWorkspace = async (payload: any) => {
   return response;
 };
 
+export const editWorkspace = async (payload:any,id:string) => {
+  const response = await fetch(`http://localhost:3000/api/workspace/${id}`, {
+    credentials: "include",
+    method: "PATCH",
+    body: JSON.stringify(payload),
+    headers: {'content-type': 'application/json'}
+  });
+  return response;
+}
+
 export const getUser = async() =>{
   const response = await fetch("http://localhost:3000/api/user/me/profile", {
     credentials: "include",
