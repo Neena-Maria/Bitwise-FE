@@ -12,28 +12,64 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import type { DropAnimation } from "@dnd-kit/core";
 import { useState } from "react";
 import Container from "./Container";
-import { Item } from "./SortableItem";
+import { Item } from "./Item";
 
 const DragAndDrop = () => {
   const [items, setItems] = useState<any>({
     todo: [
-      { id: "1", title: "Websocket integration", status: "todo" },
-      { id: "2", title: "Api integration", status: "todo" },
+      {
+        id: "1",
+        title: "Websocket integration",
+        description: "Websocket integration",
+        status: "todo",
+      },
+      {
+        id: "2",
+        title: "Api integration",
+        description: "Api integration",
+        status: "todo",
+      },
     ],
     inprogress: [
-      { id: "3", title: "Document Editor", status: "inprogress" },
-      { id: "4", title: "Mindmap ui", status: "inprogress" },
+      {
+        id: "3",
+        title: "Document Editor",
+        description: "Document Editor",
+        status: "inprogress",
+      },
+      {
+        id: "4",
+        title: "Mindmap ui",
+        description: "Mindmap ui",
+        status: "inprogress",
+      },
     ],
-    inreview: [{ id: "5", title: "Bitwise board ui", status: "inreview" }],
+    inreview: [
+      {
+        id: "5",
+        title: "Bitwise board ui",
+        description: "Bitwise board ui",
+        status: "inreview",
+      },
+    ],
     done: [
-      { id: "6", title: "Login page", status: "done" },
-      { id: "7", title: "List page", status: "done" },
+      {
+        id: "6",
+        title: "Login page",
+        description: "Login page",
+        status: "done",
+      },
+      { id: "7", title: "List page", description: "List page", status: "done" },
     ],
   });
   const [activeId, setActiveId] = useState<any>();
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })

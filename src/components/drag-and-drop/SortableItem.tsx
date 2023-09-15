@@ -1,20 +1,6 @@
-import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { statusColors } from "../../constants";
-
-export function Item(props: { item: any }) {
-  const { item } = props;
-  const status: "todo" | "inprogress" | "inreview" | "done" = item.status;
-  return (
-    <div
-      className={`w-full h-[60px] flex items-center bg-white my-[10px] p-4 border-l-4`}
-      style={{ borderColor: statusColors[status] }}
-    >
-      {item.title}
-    </div>
-  );
-}
+import { Item } from "./Item";
 
 const SortableItem = (props: { item: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
