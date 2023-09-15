@@ -1,6 +1,6 @@
 import { ReactComponent as GoogleIcon } from "../../icons/Google.svg";
-import { ReactComponent as GoogleLogo } from "../../icons/Google-Logo.svg";
 import { useLoginMutation } from "../../store/api";
+import logo from "../../icons/logo-with-name.png";
 
 const Login = () => {
   const [login, { data }] = useLoginMutation();
@@ -25,13 +25,14 @@ const Login = () => {
 
   return (
     <div className="flex justify-center items-center w-screen h-screen bg-repeat bg-[#f5f5f5]">
-      <div className="flex flex-col relative items-center w-[560px] h-[300px] bg-white rounded-lg shadow-[0_2px_10px_rgba(0,0,0,0.1)]">
-        <GoogleLogo height={100} className="absolute " />
-        <div className="mt-20 w-full text-[35px] font-medium text-center">
-          Sign In
-        </div>
+      <div className="flex flex-col relative items-center p-8 min-w-[500px] bg-white rounded-lg shadow-[0_2px_10px_rgba(0,0,0,0.1)]">
+        <img
+          src={logo}
+          alt="logo"
+          className="object-contain h-[200px] w-[150px]"
+        />
         <button
-          className="flex items-center pl-[8px] mt-[64px] w-[245px] h-[56px] align-middle bg-[#6216fd] rounded-[54px]"
+          className="flex items-center pl-[8px] mt-8 w-[245px] h-[56px] align-middle bg-[#3A9FD8] rounded-[54px]"
           onClick={onClickSignin}
           type="button"
         >
