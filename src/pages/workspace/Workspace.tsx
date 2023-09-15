@@ -9,9 +9,12 @@ import { ReactComponent as AdminIcon } from "../../icons/admin.svg";
 import Modal from "../../components/Modal";
 import Chip from "../../components/Chip";
 import Button from "../../components/Button";
+import { useGetWorkSpacesQuery } from "../../store/api";
 
 const WorkSpace = () => {
   const navigate = useNavigate();
+
+  const { data } = useGetWorkSpacesQuery({});
 
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [workspaceName, setWorkspaceName] = useState<string>("");

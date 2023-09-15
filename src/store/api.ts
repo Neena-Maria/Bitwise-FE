@@ -25,7 +25,15 @@ export const api = createApi({
           }
         },
       }),
+      getWorkSpaces: builder.query({
+        query: () => {
+          return {
+            url: "/api/workspace",
+            method: "GET",
+          }
+        },
+      }),
   }),
 });
 
-export const { useLoginMutation } = api;
+export const { useLoginMutation, useGetWorkSpacesQuery } = api;
