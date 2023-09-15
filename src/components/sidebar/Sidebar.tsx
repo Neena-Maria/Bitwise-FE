@@ -1,6 +1,6 @@
 import { MutableRefObject, useRef, useState } from "react";
 
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import logo from "../../icons/logo.png";
 import { SideNavItem, sideNavItems } from "./SideBar.config";
 import NavSection from "./NavSection";
@@ -9,7 +9,7 @@ const SideNavBar = () => {
   const navigate = useNavigate();
 
   const { pathname: currentPath } = useLocation();
-
+  const { id } = useParams();
   const checkIfPathMatchesCurrentPath = () => {
     if (currentPath.includes("/documents")) return sideNavItems[0];
     else if (currentPath.includes("/google-docs")) return sideNavItems[1];
@@ -25,6 +25,13 @@ const SideNavBar = () => {
 
   const handleNavigate = (path: any) => {
     navigate(path);
+  };
+
+  const getPath = (item: SideNavItem) => {
+    if (item.id === "myDocs") return "/documents";
+    else if (item.id === "docs") return "/google-docs";
+    else if (item.id === "board") return "/board";
+    else return "";
   };
 
   return (
@@ -52,7 +59,8 @@ const SideNavBar = () => {
                   selectedItem={selectedMenu}
                   onSelect={(item) => {
                     setSelectedMenu(item);
-                    handleNavigate(item.path);
+                    const path = getPath(item);
+                    handleNavigate(`/workspace/${id}${path}`);
                   }}
                 />
               );
