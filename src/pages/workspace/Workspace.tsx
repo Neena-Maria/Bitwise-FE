@@ -50,12 +50,6 @@ const WorkSpace = () => {
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      console.log(user);
-    }
-  }, [user]);
-
   const findIndex = (item: string) =>
     emailList.findIndex((email) => email === item);
 
@@ -91,7 +85,10 @@ const WorkSpace = () => {
     };
     let res;
     if (selectedItem) {
-      res = await editWorkspace(request, selectedItem.id);
+      const editRequest = {
+        emails: [...emailList],
+      };
+      res = await editWorkspace(editRequest, selectedItem.id);
     } else res = await addWorkspace(request);
     if (res.ok) {
       fetchWorkspaces();
@@ -115,50 +112,55 @@ const WorkSpace = () => {
         className="ml-auto mr-10 mb-5"
       />
       <div className="flex flex-col items-center mb-4 mr-10">
-        {workspaces.map((item: any) => (
-          <div
-            className="relative w-[1500px] p-3 py-6 mt-3 rounded-lg border border-[#E8EAEB] bg-[#f2f4fc]"
-            role="presentation"
-            onClick={() => {
-              // TODO navigate to /workspace/id
-              navigate(`/workspace/${item.id}`);
-            }}
-          >
-            <div className="grid grid-cols-5">
-              <div className="flex items-center">
-                <WorkSpaceIcon className="h-5 w-5 ml-3" />
-                <p className="ml-4 text-lg">{item.name}</p>
-              </div>
-              <div className="flex items-center">
-                <UsersIcon className="h-5 w-5 mr-4" />
-                <p className="text-lg">{item.accessCount ?? "5"}</p>
-              </div>
-              <div className="flex flex-row">
-                <AdminIcon className="h-5 w-5 mr-4" />
-                <p className="text-lg max-w-[250px] truncate">
-                  {item.admin.name}
-                </p>
-              </div>
-              <p className="text-lg">{item.description}</p>
-              {item.adminUserId === user?.id && (
-                <div
-                  role="presentation"
-                  className="hover:bg-sky-200 w-fit p-2 rounded-full"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedItem(item);
-                    setWorkspaceName(item.name);
-                    setDescription(item.description);
-                    setShowAddModal(true);
-                    // setEmailList(item.)
-                  }}
-                >
-                  <EditIcon />
+        {workspaces.map((item: any) => {
+          console.log(item);
+          return (
+            <div
+              className="relative w-[1500px] p-3 py-6 mt-3 rounded-lg border border-[#E8EAEB] bg-[#f2f4fc]"
+              role="presentation"
+              onClick={() => {
+                // TODO navigate to /workspace/id
+                navigate(`/workspace/${item.workspace.id}`);
+              }}
+            >
+              <div className="grid grid-cols-5">
+                <div className="flex items-center">
+                  <WorkSpaceIcon className="h-5 w-5 ml-3" />
+                  <p className="ml-4 text-lg">{item.workspace.name}</p>
                 </div>
-              )}
+                <div className="flex items-center">
+                  <UsersIcon className="h-5 w-5 mr-4" />
+                  <p className="text-lg">
+                    {item.workspace.workspaceUsers.length}
+                  </p>
+                </div>
+                <div className="flex flex-row">
+                  <AdminIcon className="h-5 w-5 mr-4" />
+                  <p className="text-lg max-w-[250px] truncate">
+                    {item.workspace.adminUserId}
+                  </p>
+                </div>
+                <p className="text-lg">{item.workspace.description}</p>
+                {item.workspace.adminUserId === user?.id && (
+                  <div
+                    role="presentation"
+                    className="hover:bg-sky-200 w-fit p-2 rounded-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedItem(item.workspace);
+                      setWorkspaceName(item.workspace.name);
+                      setDescription(item.workspace.description);
+                      setShowAddModal(true);
+                      // setEmailList(item.)
+                    }}
+                  >
+                    <EditIcon />
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       {showAddModal && (
         <Modal
