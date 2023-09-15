@@ -1,24 +1,79 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DragAndDrop from "../../components/drag-and-drop/DragAndDrop";
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
+import { getAllTasks, createTask } from "../../api";
+import { TicketStatus } from "../../constants";
+import { useParams } from "react-router-dom";
 
 const Board = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("todo");
+  const [tasks, setTasks] = useState<any>();
+  const { workspaceId = "" } = useParams();
 
   const onCloseModal = () => {
     setShowCreateModal(false);
     setTitle("");
     setDescription("");
-    setStatus("todo");
   };
+
+  const getTasksByStatus = (taskList: any, status: string) => {
+    return taskList.filter((task: any) => task.status === status);
+  };
+
+  async function fetchTasks() {
+    const response = await getAllTasks(workspaceId);
+    const responseData = await response.json();
+    if (responseData.data) {
+      const openTasks = getTasksByStatus(responseData.data, TicketStatus.OPEN);
+      const inProgressTasks = getTasksByStatus(
+        responseData.data,
+        TicketStatus.IN_PROGRESS
+      );
+      const underReviewTasks = getTasksByStatus(
+        responseData.data,
+        TicketStatus.UNDER_REVIEW
+      );
+      const completedTasks = getTasksByStatus(
+        responseData.data,
+        TicketStatus.COMPLETED
+      );
+      const statusObject = {
+        [TicketStatus.OPEN]: openTasks,
+        [TicketStatus.IN_PROGRESS]: inProgressTasks,
+        [TicketStatus.UNDER_REVIEW]: underReviewTasks,
+        [TicketStatus.COMPLETED]: completedTasks,
+      };
+      setTasks(statusObject);
+    }
+  }
+
+  const createNewTask = async () => {
+    const payload = {
+      title,
+      description,
+      workspaceId: workspaceId,
+    };
+    const response = await createTask(payload);
+    if (response.ok) {
+      await fetchTasks();
+      setTimeout(() => {
+        window.location.reload();
+      });
+      onCloseModal();
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
-      <div className="h-[calc(100vh-100px)] px-8 py-4">
+      <div className="min-h-[calc(100vh-100px)] px-8 py-4">
         <div className="flex flex-row justify-between items-center">
           <div className="text-2xl font-semibold"> Bitwise Board </div>
           <Button
@@ -28,7 +83,7 @@ const Board = () => {
           />
         </div>
         <div className="flex flex-row gap-8 my-8 h-full w-full">
-          <DragAndDrop />
+          {tasks && <DragAndDrop tasks={tasks} />}
         </div>
       </div>
       <Modal isOpen={showCreateModal} onCancel={onCloseModal}>
@@ -52,22 +107,10 @@ const Board = () => {
               rows={4}
               cols={50}
             />
-            <p className="my-2">Status</p>
-
-            <select
-              onChange={(event) => setStatus(event.target.value)}
-              value={status}
-              className="outline-none border-2 px-2 h-10 w-full border-[#BBC0C5] rounded-lg"
-            >
-              <option value="todo">Todo</option>
-              <option value="inprogress">In Progress</option>
-              <option value="inreview">In Review</option>
-              <option value="done">Done</option>
-            </select>
 
             <div className="mt-5">
               <button
-                onClick={onCloseModal}
+                onClick={createNewTask}
                 className="bg-blue-500 hover:bg-blue-800 rounded-lg p-2 text-white"
               >
                 Submit

@@ -11,9 +11,9 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/board" element={<Board />} />
           <Route path="/workspace" element={<WorkSpace />} />
-          <Route path={"/workspace/[id]"} element={<WorkSpace />} />
+          <Route path="/workspace/:workspaceId" element={<WorkSpace />} />
+          <Route path="/workspace/:workspaceId/board" element={<Board />} />
         </Routes>
       </Router>
     </Provider>

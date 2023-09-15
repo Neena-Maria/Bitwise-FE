@@ -14,7 +14,7 @@ const Container = (props: { id: string; items: any; title: string }) => {
     id,
   });
 
-  const status = id as "todo" | "inprogress" | "inreview" | "done";
+  const status = id as "OPEN" | "IN_PROGRESS" | "UNDER_REVIEW" | "COMPLETED";
 
   return (
     <SortableContext
@@ -24,7 +24,7 @@ const Container = (props: { id: string; items: any; title: string }) => {
     >
       <div
         ref={setNodeRef}
-        className="bg-[#F4F5F7] w-full p-8 h-full flex max-w-[300px] flex-col rounded-md"
+        className="bg-[#F4F5F7] w-full p-8 min-h-[calc(100vh-150px)] flex max-w-[300px] flex-col rounded-md"
       >
         <div
           className="py-1 text-base font-semibold"
@@ -32,9 +32,8 @@ const Container = (props: { id: string; items: any; title: string }) => {
         >
           {title}
         </div>
-        {items.map((item: any) => (
-          <SortableItem key={item.id} item={item} />
-        ))}
+        {items &&
+          items.map((item: any) => <SortableItem key={item.id} item={item} />)}
       </div>
     </SortableContext>
   );
