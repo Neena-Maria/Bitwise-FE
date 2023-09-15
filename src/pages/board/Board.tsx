@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DragAndDrop from "../../components/drag-and-drop/DragAndDrop";
 import Modal from "../../components/Modal";
+import Button from "../../components/Button";
 
 const Board = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -18,9 +19,13 @@ const Board = () => {
   return (
     <>
       <div className="h-[calc(100vh-100px)] px-8 py-4">
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-row justify-between items-center">
           <div className="text-2xl font-semibold"> Bitwise Board </div>
-          <button onClick={() => setShowCreateModal(true)}> Create Task</button>
+          <Button
+            onClick={() => setShowCreateModal(true)}
+            label="+ Create Task"
+            variant="primary"
+          />
         </div>
         <div className="flex flex-row gap-8 my-8 h-full w-full">
           <DragAndDrop />
