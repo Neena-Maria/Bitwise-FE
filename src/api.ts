@@ -89,3 +89,19 @@ export const getTicketById = async(id:string) =>{
   });
   return response;
 };
+export const getGoogleDocs = async (id:string) => {
+  const response = await fetch(`http://localhost:3000/api/google/doc/workspace/${id}`, {
+    credentials: "include",
+  });
+  return response;
+};
+
+export const createGoogleDoc = async (payload:any) => {
+  const response = await fetch(`http://localhost:3000/api/google/doc`, {
+    credentials: "include",
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: {'content-type': 'application/json'}
+  });
+  return response;
+}

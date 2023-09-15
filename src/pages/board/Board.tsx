@@ -5,6 +5,7 @@ import Button from "../../components/Button";
 import { getAllTasks, createTask } from "../../api";
 import { TicketStatus } from "../../constants";
 import { useParams } from "react-router-dom";
+import SideBar from "../../components/sidebar/Sidebar";
 
 const Board = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -72,8 +73,9 @@ const Board = () => {
   }, []);
 
   return (
-    <>
-      <div className="min-h-[calc(100vh-100px)] px-8 py-4">
+    <div className="flex h-screen w-screen">
+      <SideBar />
+      <div className="min-h-[calc(100vh-100px)] px-8 py-4 w-full">
         <div className="flex flex-row justify-between items-center">
           <div className="text-2xl font-semibold"> Bitwise Board </div>
           <Button
@@ -125,7 +127,7 @@ const Board = () => {
           </div>
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
 

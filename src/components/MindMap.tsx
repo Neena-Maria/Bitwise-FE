@@ -31,6 +31,7 @@ const MindMap = () => {
             node.type
           )}`,
           hoverText: node.name,
+          type: node.type,
         })),
         links: responseData.data.links,
       };
@@ -81,43 +82,60 @@ const MindMap = () => {
   //   ],
   // };
 
+  const getLabelColor = (d: any) => {
+    console.log("node", d);
+    if (d.type === "BITWISE_DOC") return "#38bdf8";
+    else if (d.type === "BITWISE_TICKET") return "#dc2626";
+    else if (d.type === "GOOGLE_DOC") return "#16a34a";
+    else return "";
+  };
+
+  // const getNodeColor = (d: any) => {
+  //   if (d.type === "BITWISE_DOC") return 'rgb(121,126,246)';
+  //   else if (d.type === "BITWISE_TICKET") return "rgb(80 7 36)";
+  //   else if (d.type === "GOOGLE_DOC") return "rgb(190 18 60)";
+  //   else return "";
+  // };
+
   return (
-    <div>
-      {data && (
-        <ForceGraph3D
-          graphData={data}
-          // nodeLabel={(node) => node.label}   // on hover data
-          onNodeClick={(node) => {
-            if (node.href) {
-              window.open(node.href, "_blank");
-            }
-          }}
-          // onNodeHover={(node: any) => {
-          //   if (node?.hoverText) {
-          //     console.log(node?.hoverText);
-          //   }
-          // }}
-          // nodeThreeObject={(node: any) => {
-          //   const label1 = document.createElement("div");
-          //   label1.className = "text-[#2f6fed]";
-          //   label1.textContent = node.id;
-          //   return label1;
-          // }}
-          nodeThreeObject={(node: any) => {
-            const sprite = new SpriteText(node.label);
-            sprite.color = node.color;
-            sprite.textHeight = 6;
-            return sprite;
-          }}
-          nodeThreeObjectExtend={true}
-          linkColor={(e) => "#000"}
-          linkWidth={1}
-          backgroundColor="#c4c4c2"
-          nodeColor={(d) => "#ff0000"} // bg color of circular node
-          nodeRelSize={0} // size of circular node
-          // nodeLabel={}
-        />
-      )}
+    <div className="h-full w-[300px] border-l border-zinc-400">
+      <ForceGraph3D
+        width={540}
+        graphData={data}
+        // nodeLabel={(node) => node.label}   // on hover data
+        onNodeClick={(node) => {
+          if (node.href) {
+            window.open(node.href, "_blank");
+          }
+        }}
+        // onNodeHover={(node: any) => {
+        //   if (node?.hoverText) {
+        //     console.log(node?.hoverText);
+        //   }
+        // }}
+        // nodeThreeObject={(node: any) => {
+        //   const label1 = document.createElement("div");
+        //   label1.className = "text-[#2f6fed]";
+        //   label1.textContent = node.id;
+        //   return label1;
+        // }}
+        nodeThreeObject={(node: any) => {
+          const sprite = new SpriteText(
+            node.label.length > 6 ? `${node.label.slice(0, 7)}...` : node.label
+          );
+          sprite.color = getLabelColor(node);
+          sprite.textHeight = 8;
+          return sprite;
+        }}
+        nodeThreeObjectExtend={true}
+        linkColor={(e) => "#544f5b"}
+        linkOpacity={2}
+        linkWidth={1}
+        backgroundColor="#fff"
+        // nodeColor={(d) => getNodeColor(d)} // bg color of circular node
+        nodeRelSize={0} // size of circular node
+        // nodeLabel={0}
+      />
     </div>
   );
 };
