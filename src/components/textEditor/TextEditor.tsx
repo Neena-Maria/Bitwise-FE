@@ -8,47 +8,49 @@ import { convertToHTML } from "draft-convert";
 import htmlToDraft from 'html-to-draftjs';
 import _ from "lodash";
 
-// const mentions =  [
-//   { text: "JavaScript", value: "javascript", url: "js" },
-//   { text: "Golang", value: "golang", url: "go" },
-// ];
-
 const Summer = ({message, linkedNodes, setMessage, setLinkedNodes, allDocs = [], updateData} : any) => {
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
-    const [convertedContent, setConvertedContent] = useState(message?.message ?? "");
-    const [mentionedItems, steMentionedItems] = useState(message?.linkedNodes);
+    const [mentionedItems, setMentionedItems] = useState(message?.linkedNodes);
 
-    const replaceMentions = (value: string) => {
-      let updatedString = value;
-      const regex: any = /#(\w+)/g;
-      const matches = updatedString.match(regex) || [];
-      if(matches.length) {
-        const mention = allDocs.find((m: any) => matches[0] === `#${m.value}`)
-        const r = updatedString.replace(matches[0] as any, `<a href='${mention?.url}'><span style=\"background-color: #d4f4fa;\"><span style=\"color: #0055ff;\"><u>${mention?.text || matches[0]}</u></span></span></a>`)
-        return r;
-      }
-      return updatedString;
-    };
+    const  replaceSubstrings = (inputString: string) => {
+      const pattern = new RegExp(allDocs.map((d: any) => `#${d.value}`).join('|'), 'g');
+    
+      const resultString = inputString.replace(pattern, matched => {
+        const doc = allDocs.find((doc: any) => (`#${doc.value}` === matched)); 
+        return `<a href='${doc?.url}'><span style=\"background-color: #d4f4fa;\"><span style=\"color: #0055ff;\"><u>${doc?.text || pattern}</u></span></span></a>`
+      });
+    
+      return resultString;
+    }
 
      useEffect(()=>{
      setEditorState(htmlToDraftBlocks(message ?? ""));
-
      },[message]);
     
-    useEffect(() => {
-      let html = convertToHTML(editorState.getCurrentContent());
-      const updatedHtml = replaceMentions(html);
-      setConvertedContent(updatedHtml);
-        updateData({
-          ...message,
-          message: updatedHtml,
-          linkedNodes: mentionedItems,
-        });
-    }, [editorState]);
 
     const onEditorStateChange = (value: any) => {
+      let html = convertToHTML(editorState.getCurrentContent());
+      const mentionedDocs = allDocs.filter((i: any) => html.includes(i.value)).map((m: any) => ({
+        id: m.id,
+        name: m.name,
+        type: m.type
+      }))
+      if(allDocs.map((d: any) => d.value).some((v: any) => html.includes(v))) {
+        const updatedHtml = replaceSubstrings(html);
+      setEditorState(htmlToDraftBlocks(updatedHtml));
+      updateData({
+        message: updatedHtml,
+        linkedNodes: mentionedDocs,
+      });
+      return;
+      }
+      updateData({
+        ...message,
+        message: html,
+        linkedNodes: mentionedItems,
+      });
       setEditorState(value);
     }
 

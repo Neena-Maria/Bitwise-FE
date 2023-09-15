@@ -18,6 +18,7 @@ const DocumentEditor = () => {
     const response = await getAllItems(id as string);
     const responseData = await response.json();
     const allDocs = responseData?.data?.nodes.map((n: any) => ({
+        ...n,
         text: n.name,
         value: n.id,
         url: n.type === "BITWISE_DOC" ? `http://localhost:3002/workspace/${id}/documents/${n.id}` : (n.type === "BITWISE_TICKET" ? `http://localhost:3002/workspace/${id}/borad?taskId=${n.id}` : `http://localhost:3002/workspace/${id}/google-docs/${n.id}`) 
@@ -39,6 +40,7 @@ const DocumentEditor = () => {
     socket.emit("findOne", JSON.stringify({ id: myDocId }));
 
     socket.on("messageUpdated", (data) => {
+        console.log("Data ====>" ,data);
       const parsedData: any = JSON.parse(data);
       if (parsedData?.id) {
         if (myDocId && parsedData?.id === myDocId) {
@@ -59,6 +61,7 @@ const DocumentEditor = () => {
 
   const updateData = (data: any) => {
     if(savedData?.id && data.message !== message) {
+        console.log(data);
       socket.emit("updateMessage", JSON.stringify({
         ...savedData, 
         message: data.message,
