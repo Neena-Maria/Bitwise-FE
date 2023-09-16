@@ -6,47 +6,59 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./TextEditor.css";
 import { convertToHTML } from "draft-convert";
 import htmlToDraft from 'html-to-draftjs';
+import { useParams } from "react-router-dom";
+import _ from "lodash";
 
-const mentions =  [
-  { text: "JavaScript", value: "javascript", url: "js" },
-  { text: "Golang", value: "golang", url: "go" },
-];
-
-const Summer = () => {
+const Summer = ({message, linkedNodes, setMessage, setLinkedNodes, allDocs = [], updateData} : any) => {
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
-    const [convertedContent, setConvertedContent] = useState('');
-    const [mentionedItems, steMentionedItems] = useState([]);
+    const [mentionedItems, setMentionedItems] = useState(message?.linkedNodes);
 
-    const replaceMentions = (value: string) => {
-      let updatedString = value;
-      const regex: any = /#(\w+)/g;
-      const matches = updatedString.match(regex) || [];
-      if(matches.length) {
-        const mention = mentions.find(m => matches[0] === `#${m.value}`)
-        const r = updatedString.replace(matches[0] as any, `<a href='${mention?.url}'><span style=\"background-color: #d4f4fa;\"><span style=\"color: #0055ff;\"><u>${mention?.text || matches[0]}</u></span></span></a>`)
-        return r;
-      }
-      return updatedString;
-    };
+    const { myDocId = "" } = useParams();
+
+    const  replaceSubstrings = (inputString: string) => {
+      const pattern = new RegExp(allDocs.map((d: any) => `#${d.value}`).join('|'), 'g');
+    
+      const resultString = inputString.replace(pattern, matched => {
+        const doc = allDocs.find((doc: any) => (`#${doc.value}` === matched)); 
+        return `<a href='${doc?.url}'><span style=\"background-color: #d4f4fa;\"><span style=\"color: #0055ff;\"><u>${doc?.text || pattern}</u></span></span></a>`
+      });
+    
+      return resultString;
+    }
 
      useEffect(()=>{
-     setEditorState(htmlToDraftBlocks("<p>Hello</p>"));
-     },[]);
+     setEditorState(htmlToDraftBlocks(message ?? ""));
+     },[message]);
     
-    useEffect(() => {
-      let html = convertToHTML(editorState.getCurrentContent());
-      const updatedHtml = replaceMentions(html);
-      setConvertedContent(updatedHtml);
-    }, [editorState]);
 
     const onEditorStateChange = (value: any) => {
+      let html = convertToHTML(editorState.getCurrentContent());
+      const mentionedDocs = allDocs.filter((i: any) => html.includes(i.value)).map((m: any) => ({
+        id: m.id,
+        name: m.name,
+        type: m.type
+      }))
+      if(allDocs.map((d: any) => d.value).some((v: any) => html.includes(v))) {
+        const updatedHtml = replaceSubstrings(html);
+      setEditorState(htmlToDraftBlocks(updatedHtml));
+      updateData({
+        message: updatedHtml,
+        linkedNodes: mentionedDocs,
+      });
+      return;
+      }
+      updateData({
+        ...message,
+        message: html,
+        linkedNodes: mentionedItems,
+      });
       setEditorState(value);
     }
 
     const htmlToDraftBlocks = (html: string) => {
-      const blocksFromHtml = htmlToDraft(html);
+      const blocksFromHtml = htmlToDraft(html ?? '');
       const { contentBlocks, entityMap } = blocksFromHtml;
       const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
       const editorStateContent = EditorState.createWithContent(contentState);
@@ -65,7 +77,7 @@ const Summer = () => {
         mention={{
           separator: " ",
           trigger: "#",
-          suggestions: mentions,
+          suggestions: allDocs.filter((doc: any) => doc.id !== myDocId),
         }}
       />
     </div>

@@ -59,6 +59,12 @@ export const changeTaskStatus = async (payload:any,id:string) =>{
   return response;
 }
 
+export const getAllItems = async (id:string) => {
+  const response = await fetch(`http://localhost:3000/api/workspace/${id}/all`, {
+    credentials: "include",
+  });
+  return response;
+}
 export const getMyDocs = async (id:string) => {
   const response = await fetch(`http://localhost:3000/api/document/workspace/${id}`, {
     credentials: "include",
