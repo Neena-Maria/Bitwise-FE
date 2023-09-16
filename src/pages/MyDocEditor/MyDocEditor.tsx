@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { useParams } from "react-router-dom";
 import { getAllItems } from "../../api";
+import SideBar from "../../components/sidebar/Sidebar";
 
 const socket = io("http://localhost:3001"); // Replace with your socket server URL
 
@@ -71,9 +72,12 @@ const DocumentEditor = () => {
   };
 
   return (
-    <>
-      <TextEditor message={message} linkedNodes={linkedNodes} setMessage={setMessage} setLinkedNodes={setLinkedNodes} updateData={updateData} allDocs={allDocs} />
-    </>
+    <div className="flex h-screen w-screen">
+    <SideBar />
+    <div className="h-full w-full flex">
+    <TextEditor message={message} linkedNodes={linkedNodes} setMessage={setMessage} setLinkedNodes={setLinkedNodes} updateData={updateData} allDocs={allDocs} />
+    </div>
+  </div>
   );
 };
 

@@ -5,7 +5,7 @@ import Login from "./pages/login/Login";
 import Board from "./pages/board/Board";
 import WorkSpace from "./pages/workspace/Workspace";
 import GoogleDocs from "./pages/googleDocs/GoogleDocs";
-import MyDocs from "./pages/googleDocs/GoogleDocs";
+import MyDocs from "./pages/myDocs/MyDocs";
 import GoogleDocEditor from "./pages/GoogleDocEditor/GoogleDocEditor";
 import MyDocEditor from "./pages/MyDocEditor/MyDocEditor";
 

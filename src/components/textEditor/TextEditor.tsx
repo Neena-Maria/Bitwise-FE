@@ -6,6 +6,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./TextEditor.css";
 import { convertToHTML } from "draft-convert";
 import htmlToDraft from 'html-to-draftjs';
+import { useParams } from "react-router-dom";
 import _ from "lodash";
 
 const Summer = ({message, linkedNodes, setMessage, setLinkedNodes, allDocs = [], updateData} : any) => {
@@ -13,6 +14,8 @@ const Summer = ({message, linkedNodes, setMessage, setLinkedNodes, allDocs = [],
     EditorState.createEmpty()
   );
     const [mentionedItems, setMentionedItems] = useState(message?.linkedNodes);
+
+    const { myDocId = "" } = useParams();
 
     const  replaceSubstrings = (inputString: string) => {
       const pattern = new RegExp(allDocs.map((d: any) => `#${d.value}`).join('|'), 'g');
@@ -74,7 +77,7 @@ const Summer = ({message, linkedNodes, setMessage, setLinkedNodes, allDocs = [],
         mention={{
           separator: " ",
           trigger: "#",
-          suggestions: allDocs,
+          suggestions: allDocs.filter((doc: any) => doc.id !== myDocId),
         }}
       />
     </div>

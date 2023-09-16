@@ -21,7 +21,7 @@ const NavSection: React.FC<NavSectionInterface> = ({
   }`;
 
   const getSidebarIcon = () => {
-    if (id === "editor") return <Notes />;
+    if (id === "myDocs") return <Notes />;
     else if (id === "docs") return <GoogleDoc />;
     else if (id === "board") return <Board />;
     else return "";

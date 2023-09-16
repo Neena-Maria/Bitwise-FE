@@ -2,6 +2,7 @@ import TextEditor from "../../components/textEditor/TextEditor";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { useParams } from "react-router-dom";
+import SideBar from "../../components/sidebar/Sidebar";
 
 const socket = io("http://localhost:3001"); // Replace with your socket server URL
 
@@ -49,9 +50,12 @@ const GoogleDocEditor = () => {
   };
 
   return (
-    <>
-      <TextEditor message={message} linkedNodes={linkedNodes} setMessage={setMessage} setLinkedNodes={setLinkedNodes} updateData={updateData} />
-    </>
+    <div className="flex h-screen w-screen">
+    <SideBar />
+    <div className="h-full w-full flex">
+    <TextEditor message={message} linkedNodes={linkedNodes} setMessage={setMessage} setLinkedNodes={setLinkedNodes} updateData={updateData} />
+    </div>
+  </div>
   );
 };
 

@@ -12,13 +12,13 @@ import Modal from "../../components/Modal";
 import Chip from "../../components/Chip";
 import Button from "../../components/Button";
 
-import { addWorkspace, getWorkspaces } from "../../api";
+import { addWorkspace, editWorkspace, getUser, getWorkspaces } from "../../api";
+import MindMap from "../../components/MindMap";
 
 const WorkSpace = () => {
   const navigate = useNavigate();
 
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [showEditModal, setShowEditModal] = useState<boolean>(false);
 
   const [workspaceName, setWorkspaceName] = useState<string>("");
   const [emailId, setEmailId] = useState<string>("");
@@ -26,6 +26,9 @@ const WorkSpace = () => {
   const [description, setDescription] = useState<string>("");
 
   const [workspaces, setWorkspaces] = useState<any>([]);
+  const [user, setUser] = useState<any>();
+
+  const [selectedItem, setSelectedItem] = useState<any>();
 
   async function fetchWorkspaces() {
     const response = await getWorkspaces();
@@ -35,8 +38,17 @@ const WorkSpace = () => {
     }
   }
 
+  const fetchUser = async () => {
+    const response = await getUser();
+    const responseData = await response.json();
+    if (responseData.data) {
+      setUser(responseData.data);
+    }
+  };
+
   useEffect(() => {
     fetchWorkspaces();
+    fetchUser();
   }, []);
 
   const findIndex = (item: string) =>
@@ -72,12 +84,17 @@ const WorkSpace = () => {
       description: description,
       userEmails: [...emailList],
     };
-    const res = await addWorkspace(request);
+    let res;
+    if (selectedItem) {
+      const editRequest = {
+        emails: [...emailList],
+      };
+      res = await editWorkspace(editRequest, selectedItem.id);
+    } else res = await addWorkspace(request);
     if (res.ok) {
       fetchWorkspaces();
     }
     setShowAddModal(false);
-    setShowEditModal(false);
     setEmailId("");
     setWorkspaceName("");
     setEmailList([]);
@@ -96,50 +113,65 @@ const WorkSpace = () => {
         className="ml-auto mr-10 mb-5"
       />
       <div className="flex flex-col items-center mb-4 mr-10">
-        {workspaces.map((item: any) => (
-          <div
-            className="relative w-[1500px] p-3 py-6 mt-3 rounded-lg border border-[#E8EAEB] bg-[#f2f4fc]"
-            role="presentation"
-            onClick={() => {
-              // TODO navigate to /workspace/id
-              navigate(`/workspace/${item.id}`);
-            }}
-          >
-            <div className="grid grid-cols-5">
-              <div className="flex items-center">
-                <WorkSpaceIcon className="h-5 w-5 ml-3" />
-                <p className="ml-4 text-lg">{item.name}</p>
-              </div>
-              <div className="flex items-center">
-                <UsersIcon className="h-5 w-5 mr-4" />
-                <p className="text-lg">{item.accessCount ?? "5"}</p>
-              </div>
-              <div className="flex flex-row">
-                <AdminIcon className="h-5 w-5 mr-4" />
-                <p className="text-lg max-w-[150px] truncate">
-                  {item.adminUserId}
-                </p>
-              </div>
-              <p className="text-lg">{item.description}</p>
-              <div
-                role="presentation"
-                className="hover:bg-sky-200 w-fit p-2 rounded-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <EditIcon />
+        {workspaces.map((item: any) => {
+          console.log(item);
+          return (
+            <div
+              className="relative w-[1500px] p-3 py-6 mt-3 rounded-lg border border-[#E8EAEB] bg-[#f2f4fc]"
+              role="presentation"
+              onClick={() => {
+                // TODO navigate to /workspace/id
+                navigate(`/workspace/${item.workspace.id}/documents`);
+              }}
+            >
+              <div className="grid grid-cols-5">
+                <div className="flex items-center">
+                  <WorkSpaceIcon className="h-5 w-5 ml-3" />
+                  <p className="ml-4 text-lg">{item.workspace.name}</p>
+                </div>
+                <div className="flex items-center">
+                  <UsersIcon className="h-5 w-5 mr-4" />
+                  <p className="text-lg">
+                    {item.workspace.workspaceUsers.length}
+                  </p>
+                </div>
+                <div className="flex flex-row">
+                  <AdminIcon className="h-5 w-5 mr-4" />
+                  <p className="text-lg max-w-[250px] truncate">
+                    {item.workspace.admin.name}
+                  </p>
+                </div>
+                <p className="text-lg">{item.workspace.description}</p>
+                {item.workspace.adminUserId === user?.id && (
+                  <div
+                    role="presentation"
+                    className="hover:bg-sky-200 w-fit p-2 rounded-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedItem(item.workspace);
+                      setWorkspaceName(item.workspace.name);
+                      setDescription(item.workspace.description);
+                      const emails = item.workspace.workspaceUsers.map(
+                        (userDetails: any) => userDetails.user.email
+                      );
+                      setEmailList(emails);
+                      setShowAddModal(true);
+                      // setEmailList(item.)
+                    }}
+                  >
+                    <EditIcon />
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      {(showAddModal || showEditModal) && (
+      {showAddModal && (
         <Modal
           isOpen={showAddModal}
           onCancel={() => {
             setShowAddModal(false);
-            setShowEditModal(false);
             setEmailId("");
             setWorkspaceName("");
             setEmailList([]);
@@ -156,6 +188,7 @@ const WorkSpace = () => {
                 className="outline-none border-2 px-2 h-10 w-full border-[#BBC0C5] rounded-lg"
                 onChange={(e) => setWorkspaceName(e.target.value)}
                 value={workspaceName}
+                disabled={selectedItem}
               />
               <p className="mb-2 mt-4">Description</p>
               <textarea
@@ -165,6 +198,7 @@ const WorkSpace = () => {
                 value={description}
                 rows={4}
                 cols={50}
+                disabled={selectedItem}
               />
               <p className="mt-2 mb-2">Email</p>
               <input
@@ -196,7 +230,6 @@ const WorkSpace = () => {
                   variant="secondary"
                   onClick={() => {
                     setShowAddModal(false);
-                    setShowEditModal(false);
                     setEmailId("");
                     setWorkspaceName("");
                     setEmailList([]);
